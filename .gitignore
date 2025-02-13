@@ -12,3 +12,6 @@
 *.filters
 *.user
 *.sln
+/NNHub/MyCNN
+/NNHub/MyCNNFile
+/NNHub/output2.nn
