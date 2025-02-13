@@ -11,17 +11,22 @@ IncludeDir["spdlog"] = "../vendor/spdlog/include"
 IncludeDir["glmLS"] = "$(SolutionDir)Walnut/vendor/glm"
 IncludeDir["spdlogLs"] = "$(SolutionDir)Walnut/vendor/spdlog/include"
 IncludeDir["Arma"] = "$(SolutionDir)vendor/armadillo-code/include"
+IncludeDir["Cuda"] = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/include"
 
 LibraryDir = {}
 LibraryDir["VulkanSDK"] = "%{VULKAN_SDK}/Lib"
 LibraryDir["OpenSSL"] = "%{OPENSSL}/lib/VC/x64/MD"
 LibraryDir["Arma"] = "$(SolutionDir)vendor/armadillo-code/lib"
+LibraryDir["Cuda"] = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/lib/x64"
 
 Library = {}
 Library["Vulkan"] = "%{LibraryDir.VulkanSDK}/vulkan-1.lib"
 Library["OpenSSL_Crypto"] = "%{LibraryDir.OpenSSL}/libcrypto.lib"
 Library["OpenSSL_Ssl"] = "%{LibraryDir.OpenSSL}/libssl.lib"
 Library["ArmaLib"] = "%{LibraryDir.Arma}/libopenblas.lib"
+Library["CudaRT"] = "%{LibraryDir.Cuda}/cudart.lib"
+Library["CudaBlas"] = "%{LibraryDir.Cuda}/cublas.lib"
+Library["Cuda"] = "%{LibraryDir.Cuda}/cuda.lib"
 
 group "Dependencies"
    include "Walnut/vendor/imgui"

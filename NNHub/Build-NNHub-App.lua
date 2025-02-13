@@ -17,13 +17,17 @@ project "NNHub"
 
       --"%{IncludeDir.VulkanSDK}",
       "%{IncludeDir.glmLS}",
-      "%{IncludeDir.Arma}"
+      "%{IncludeDir.Arma}",
+      "%{IncludeDir.Cuda}"
    }
 
     links
     {
         "Walnut",
-        "%{Library.ArmaLib}"
+        "%{Library.ArmaLib}",
+        "%{Library.Cuda}",
+        "%{Library.CudaRT}",
+        "%{Library.CudaBlas}"
     }
 
    targetdir ("../bin/" .. outputdir .. "/%{prj.name}")
@@ -34,13 +38,13 @@ project "NNHub"
       defines { "WL_PLATFORM_WINDOWS" }
 
    filter "configurations:Debug"
-      defines { "WL_DEBUG" }
+      defines { "WL_DEBUG", "ARMA_USE_BLAS", "ARMA_USE_LAPACK", "ARMA_USE_CUBLAS", "ARMA_EXTRA_DEBUG" }
       runtime "Debug"
       staticruntime "off"
       symbols "On"
 
    filter "configurations:Release"
-      defines { "WL_RELEASE" }
+      defines { "WL_RELEASE", "ARMA_USE_BLAS", "ARMA_USE_LAPACK", "ARMA_USE_CUBLAS", "ARMA_NO_DEBUG" }
       runtime "Release"
       staticruntime "off"
       optimize "On"
@@ -48,7 +52,7 @@ project "NNHub"
 
    filter "configurations:Dist"
       kind "WindowedApp"
-      defines { "WL_DIST" }
+      defines { "WL_DIST", "ARMA_USE_BLAS", "ARMA_USE_LAPACK", "ARMA_USE_CUBLAS", "ARMA_NO_DEBUG" }
       runtime "Release"
       staticruntime "On"
       optimize "On"

@@ -15,3 +15,6 @@
 /NNHub/MyCNN
 /NNHub/MyCNNFile
 /NNHub/output2.nn
+/bin/Release-windows-x86_64
+/bin-int/Release-windows-x86_64/NNHub/NNHub.tlog
+/bin-int/Release-windows-x86_64
