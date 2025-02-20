@@ -2,9 +2,7 @@
 
 #include <fstream>
 
-#include "../NeuronNetwork.h"
-
-void loadMnist(const std::string& filename, NN::Mat& X, NN::Mat& Y)
+static void loadMnist(const std::string& filename, NN::Mat& X, NN::Mat& Y)
 {
 	NN::Mat data;
 
@@ -63,6 +61,9 @@ void Creator::Clear()
 {
 	if (m_buildThread)
 		return;
+
+	m_cost = 0;
+	m_testPercentage = 0;
 }
 
 void Creator::StartBuild()
@@ -77,13 +78,8 @@ void Creator::StartBuild()
 	m_buildThread = new std::thread(
 		[&]()
 		{
-			NN::NeuronNetwork::NetworkSpecification spec;
-			spec.input = 28 * 28;
-			spec.LayerOptions.emplace_back(128, NN::Functions::Sigmoid);
-			spec.LayerOptions.emplace_back(32, NN::Functions::Sigmoid);
-			spec.LayerOptions.emplace_back(10, NN::Functions::Sigmoid);
-			spec.outputPath = m_name;
-			spec.costF = NN::Functions::SC;
+			m_Spec.input = 28 * 28;
+			m_Spec.outputPath = m_name;
 
 			NN::Mat X_train, X_test;
 			NN::Mat Y_train, Y_test;
@@ -92,9 +88,9 @@ void Creator::StartBuild()
 			loadMnist("mnist_test\\mnist_test.csv", X_test, Y_test);
 
 			const int step = std::min((int)X_train.n_rows - 1, m_banchSize);
-			spec.banchSize = step;
+			m_Spec.banchSize = step;
 
-			NN::NeuronNetwork cnn(spec);
+			NN::NeuronNetwork cnn(m_Spec);
 
 			const int MaxTraining = m_repeat;
 
@@ -212,6 +208,8 @@ void Creator::EndBuild()
 	m_buildThread = nullptr;
 	
 	m_percentage = 0;
+
+	Clear();
 }
 
 Creator::Status Creator::GetStatus() const
@@ -268,4 +266,9 @@ void Creator::SetBanchSize(int banchSize)
 int& Creator::GetBanchSize()
 {
 	return m_banchSize;
+}
+
+NN::NeuronNetwork::NetworkSpecification& Creator::GetSpecification()
+{
+	return m_Spec;
 }

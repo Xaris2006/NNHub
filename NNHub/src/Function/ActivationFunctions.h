@@ -13,6 +13,15 @@ namespace NN::Functions
 		Empty
 	};
 
+	inline const char* const ActivationFunctionName[] =
+	{
+		"Sigmoid",
+		"ReLU",
+		"LeakyReLU",
+		"Tanh",
+		"Empty"
+	};
+
 	//-------
 
 	Vec _Sigmoid(const Vec& v);

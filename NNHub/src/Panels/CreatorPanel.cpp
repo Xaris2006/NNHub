@@ -19,6 +19,9 @@ struct ScrollingBuffer {
 		MaxSize = max_size;
 		Offset = 0;
 		Data.reserve(MaxSize);
+
+		Data.push_back(ImVec2(0, 0));
+		Offset = (Offset + 1) % MaxSize;
 	}
 	void AddPoint(float x, float y) {
 		if (Data.size() < MaxSize)
@@ -35,6 +38,8 @@ struct ScrollingBuffer {
 		}
 	}
 };
+
+static ScrollingBuffer sdata3, sdataD, sdataT;
 
 namespace Panels
 {
@@ -81,22 +86,27 @@ namespace Panels
 
 		ImGui::BeginDisabled(Creator::Get().GetStatus() == Creator::Nothing);
 
-		static ScrollingBuffer sdata3, sdataD, sdataT;
 		static float t = 0;
-		t += ImGui::GetIO().DeltaTime;
-		sdata3.AddPoint(t, Creator::Get().GetCost());
-		static float last = Creator::Get().GetCost();
-		static float lastT = t;
-		float dC_dt = (Creator::Get().GetCost() - last) / (t - lastT);
-		sdataD.AddPoint(t, dC_dt);
-		last = Creator::Get().GetCost();
-		lastT = t;
-		sdataT.AddPoint(t, Creator::Get().GetTestPercentage());
+
+		if (Creator::Get().GetStatus() == Creator::Nothing)
+			t = 0;
+
+		if (Creator::Get().GetStatus() == Creator::Building)
+		{
+			t += ImGui::GetIO().DeltaTime;
+			sdata3.AddPoint(t, Creator::Get().GetCost());
+			static float last = Creator::Get().GetCost();
+			static float lastT = t;
+			float dC_dt = (Creator::Get().GetCost() - last) / (t - lastT);
+			sdataD.AddPoint(t, dC_dt);
+			last = Creator::Get().GetCost();
+			lastT = t;
+			sdataT.AddPoint(t, Creator::Get().GetTestPercentage());
+
+		}
 
 		static float history = 10.0f;
 		ImGui::SliderFloat("History", &history, 1, 30, "%.1f s");
-		//rdata1.Span = history;
-		//rdata2.Span = history;
 
 		if (ImPlot::BeginSubplots("##CostPlots", 1, 2, ImVec2(-1, 400)))
 		{
@@ -160,8 +170,13 @@ namespace Panels
 		{
 			//ImGui::BeginDisabled(files.empty());
 
-			if (ImGui::ImageButton((ImTextureID)m_PlayIcon->GetRendererID(), { 22, 22 }))
+			if (ImGui::ImageButton((ImTextureID)m_PlayIcon->GetRendererID(), { 22, 22 })
+				&& Creator::Get().GetSpecification().LayerOptions.size() >= 3)
 			{
+				sdata3.Erase();
+				sdataD.Erase();
+				sdataT.Erase();
+
 				Creator::Get().Creator::StartBuild();
 			}
 
@@ -193,6 +208,13 @@ namespace Panels
 		if (ImGui::ImageButton((ImTextureID)m_StopIcon->GetRendererID(), { 22, 22 }))
 		{
 			Creator::Get().Creator::EndBuild();
+
+			sdata3.Erase();
+			sdata3.AddPoint(0, 0);
+			sdataD.Erase();
+			sdataD.AddPoint(0, 0);
+			sdataT.Erase();
+			sdataT.AddPoint(0, 0);
 		}
 
 		ImGui::SameLine();
@@ -242,13 +264,58 @@ namespace Panels
 
 		ImGui::SameLine();
 
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 5);
+		auto& spec = Creator::Get().GetSpecification();
 
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 5);
+		
 		ImGui::SetNextItemWidth(ImGui::CalcTextSize("12345678911131517192123252729313335373941").x);
 		ImGui::InputText("Output Name", &Creator::Get().GetName());
 
 		ImGui::InputInt("Training Repeatness", &Creator::Get().GetRepeatness(), 100, 1000);
 		ImGui::InputInt("Banch Size", &Creator::Get().GetBanchSize(), 10, 100);
+
+		ImGui::Separator();
+
+		//ImGui::InputInt("Input", (int*)&spec.input, 10, 100);
+
+		ImGui::Separator();
+
+		if (ImGui::Button("Add Layer"))
+			spec.LayerOptions.emplace_back(std::pair(10, NN::Functions::Sigmoid));
+
+		static int removeLayer = -1;
+
+		for (int i = 0; i < spec.LayerOptions.size(); ++i)
+		{
+			ImGui::PushID(i);
+			
+			ImGui::SetNextItemWidth(ImGui::CalcTextSize("12345678911131517192123").x);
+			ImGui::Combo("##Activation Function", (int*)&spec.LayerOptions[i].second, NN::Functions::ActivationFunctionName, 5);
+			
+			ImGui::SameLine();
+
+			std::string layerID = "Layer " + std::to_string(i + 1);
+			ImGui::SetNextItemWidth(ImGui::CalcTextSize("12345678911131517192123").x);
+			ImGui::InputInt(layerID.c_str(), (int*)&spec.LayerOptions[i].first, 10, 100);
+
+			ImGui::SameLine();
+
+			if(ImGui::Button("Remove"))
+				removeLayer = i;
+
+			ImGui::PopID();
+		}
+
+		if (removeLayer != -1)
+		{
+			spec.LayerOptions.erase(spec.LayerOptions.begin() + removeLayer);
+			removeLayer = -1;
+		}
+
+		ImGui::Separator();
+
+		ImGui::SetNextItemWidth(ImGui::CalcTextSize("12345678911131517192123").x);
+		ImGui::Combo("Cost Function", (int*)&spec.costF, NN::Functions::CostFunctionName, 5);
 
 		ImGui::EndDisabled();
 

@@ -25,9 +25,7 @@ project "NNHub"
     {
         "Walnut",
         "%{Library.ArmaLib}",
-        "%{Library.Cuda}",
-        "%{Library.CudaRT}",
-        "%{Library.CudaBlas}"
+        "%{Library.OpenBlas}"
     }
 
    targetdir ("../bin/" .. outputdir .. "/%{prj.name}")

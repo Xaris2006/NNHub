@@ -18,7 +18,7 @@ namespace NN
 			std::vector<std::pair<unsigned int, Functions::ActivationFunction>> LayerOptions;
 			
 			Functions::CostFunction costF;
-			size_t branchSize;
+			//size_t branchSize;
 			RealType learningRate;
 			int banchSize;
 		};

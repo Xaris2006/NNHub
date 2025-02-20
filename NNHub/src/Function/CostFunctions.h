@@ -12,6 +12,16 @@ namespace NN::Functions
 		MAE,
 		HingeLoss
 	};
+	
+	inline const char* const CostFunctionName[] =
+	{
+		"Sc",
+		"MSC",
+		"LogisticC",
+		"MAE",
+		"Hinge Loss"
+
+	};
 
 	//-------
 

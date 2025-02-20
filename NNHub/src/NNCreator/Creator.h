@@ -4,6 +4,8 @@
 #include <filesystem>
 #include <thread>
 
+#include "../NeuronNetwork.h"
+
 class Creator
 {
 public:
@@ -42,6 +44,8 @@ public:
 	void SetBanchSize(int banchSize);
 	int& GetBanchSize();
 
+	NN::NeuronNetwork::NetworkSpecification& GetSpecification();
+
 private:
 	Creator() = default;
 	~Creator();
@@ -59,4 +63,6 @@ private:
 	std::thread* m_buildThread = nullptr;
 	int m_controrThread = 2;
 	bool m_threadEnded = true;
+
+	NN::NeuronNetwork::NetworkSpecification m_Spec;
 };
