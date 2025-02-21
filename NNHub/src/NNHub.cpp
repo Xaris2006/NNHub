@@ -19,6 +19,8 @@
 
 #include "implot.h"
 
+using namespace NN::CuBlas;
+
 std::u8string g_AppDirectory;
 Walnut::ApplicationSpecification g_spec;
 bool g_AlreadyOpenedModalOpen = false;
@@ -212,15 +214,15 @@ private:
 
 Walnut::Application* Walnut::CreateApplication(int argc, char** argv)
 {
-	HMODULE nvblas = LoadLibraryA("nvblas64_12.dll");
-	if (!nvblas)
-	{
-		printf("Failed to load nvblas.dll\n");
-		throw std::runtime_error("could not load nvblas.dll");
-	}
-
-	// Rest of your code (e.g., Armadillo operations)
-	printf("NVBLAS loaded successfully\n");
+	//HMODULE nvblas = LoadLibraryA("nvblas64_12.dll");
+	//if (!nvblas)
+	//{
+	//	printf("Failed to load nvblas.dll\n");
+	//	throw std::runtime_error("could not load nvblas.dll");
+	//}
+	//
+	//// Rest of your code (e.g., Armadillo operations)
+	//printf("NVBLAS loaded successfully\n");
 
 	g_spec.Name = "Neuron NetWork Hub";
 	g_spec.CustomTitlebar = true;

@@ -10,7 +10,7 @@ static void loadMnist(const std::string& filename, NN::Mat& X, NN::Mat& Y)
 		std::cerr << "Error loading " << filename << std::endl;
 		exit(1);
 	}
-
+	
 	NN::Vec y = data.col(0);
 
 	X = data.cols(1, data.n_cols - 1);
@@ -96,7 +96,7 @@ void Creator::StartBuild()
 
 			for (int i = 0; i < MaxTraining; i++)
 			{
-				NN::RealType persent = 0;
+				float persent = 0;
 
 				for (int j = 0; j < X_train.n_rows - 1; j++)
 				{

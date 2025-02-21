@@ -131,7 +131,7 @@ private:
 int notmain()
 {
     std::string overall;
-    float score = 0;
+    RealType score = 0;
 
     Process stockfish(L"stockfish.exe", L"");
     stockfish.Write("ucinewgame");
@@ -158,7 +158,7 @@ int notmain()
                     break;
                 strscore += overall[j];
             }
-            score = (float)std::stoi(strscore) / 100.0f;
+            score = (RealType)std::stoi(strscore) / 100.0f;
         }
         std::cout << '\r' << score;
     }

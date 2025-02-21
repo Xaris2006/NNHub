@@ -5,6 +5,8 @@
 
 namespace NN
 {
+	using namespace CuBlas;
+
 	NeuronNetwork::NeuronNetwork(NetworkSpecification spec)
 		:m_spec(spec)
 	{

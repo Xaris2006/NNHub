@@ -9,6 +9,8 @@ static const double g_LearningRate = 0.01;
 
 namespace NN
 {
+	using namespace CuBlas;
+
 	Layer::Layer(unsigned int AmountOfNeurons, unsigned int AmountOfPreviusLineInput, Functions::ActivationFunction activationF, int banchSize, double* data)
 		:m_NeuronsW(AmountOfNeurons, AmountOfPreviusLineInput, arma::fill::randn), m_NeuronsB(AmountOfNeurons, arma::fill::randn),
 		m_Activations(AmountOfNeurons, arma::fill::zeros), m_Z(AmountOfNeurons, arma::fill::zeros),

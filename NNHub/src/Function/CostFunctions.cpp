@@ -2,6 +2,8 @@
 
 namespace NN::Functions
 {
+	using namespace CuBlas;
+
 	//-------
 
 	double _SC(const Vec& Output, const Vec& exOutput)
@@ -33,29 +35,29 @@ namespace NN::Functions
 
 	Vec D_SC(const Vec& Output, const Vec& exOutput)
 	{
-		return 2.0 * (Output - exOutput);
+		return 2.0f * (Output - exOutput);
 	}
 
 	Vec D_MSC(const Vec& Output, const Vec& exOutput)
 	{
-		return 2.0 * (Output - exOutput) / Output.n_elem;
+		return 2.0f * (Output - exOutput) / (RealType)Output.n_elem;
 	}
 
 	Vec D_LogisticC(const Vec& Output, const Vec& exOutput)
 	{
-		return -arma::log(exOutput / (1.0 - exOutput)) / Output.n_elem;
+		return -arma::log(exOutput / (1.0f - exOutput)) / (RealType)Output.n_elem;
 	}
 
 	Vec D_MAE(const Vec& Output, const Vec& exOutput)
 	{
-		return arma::sign(Output - exOutput) / Output.n_elem;
+		return arma::sign(Output - exOutput) / (RealType)Output.n_elem;
 	}
 
 	Vec D_HingeLoss(const Vec& Output, const Vec& exOutput)
 	{
 		Vec grad = arma::zeros<Vec>(Output.n_elem);
 		for (arma::uword i = 0; i < Output.n_elem; ++i) {
-			if (1.0 - Output[i] * exOutput[i] > 0)
+			if (1.0f - Output[i] * exOutput[i] > 0)
 				grad[i] = -exOutput[i] / Output.n_elem;
 			else
 				grad[i] = 0;
